@@ -1,0 +1,43 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Személyes profil";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<div class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+        <div class="bg-indigo-light rounded-circle p-2 me-3" style="background: rgba(99, 102, 241, 0.1);">
+            <i class="bi bi-person-circle fs-4 text-primary" style="color: var(--indigo-accent) !important;"></i>
+        </div>
+        <h4 class="fw-bold mb-0">Alapvető információk</h4>
+    </div>
+    
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    <form id="profile-form" method="post" class="row g-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small fw-bold"></div>
+        
+        <div class="col-md-6">
+            <div class="form-floating shadow-sm rounded-4 overflow-hidden">
+                <input asp-for="Username" class="form-control border-0 bg-light px-4" disabled placeholder="User" style="height: 65px;" />
+                <label asp-for="Username" class="text-muted ps-4">Azonosító</label>
+            </div>
+            <div class="mt-2 ps-2 small text-muted"><i class="bi bi-info-circle me-1"></i> A felhasználónév nem módosítható.</div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-floating shadow-sm rounded-4 overflow-hidden">
+                <input asp-for="Input.PhoneNumber" class="form-control border-0 bg-light px-4" placeholder="Tel" style="height: 65px;" />
+                <label asp-for="Input.PhoneNumber" class="text-muted ps-4">Telefonszám</label>
+            </div>
+            <span asp-validation-for="Input.PhoneNumber" class="text-danger small fw-bold d-block mt-1 ms-2"></span>
+        </div>
+        
+        <div class="col-12 mt-5">
+            <button id="update-profile-button" type="submit" class="btn btn-premium px-5 py-3 shadow-sm text-uppercase fw-bold">
+                Módosítások mentése <i class="bi bi-cloud-arrow-up ms-2"></i>
+            </button>
+        </div>
+    </form>
+</div>

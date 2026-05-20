@@ -1,0 +1,200 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Regisztráció";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 col-lg-5" data-aos="zoom-in">
+        <div class="premium-card p-5 bg-white">
+            <div class="text-center mb-5">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-sm" style="width: 70px; height: 70px; background: #e0e7ff;">
+                    <i class="bi bi-person-plus fs-2" style="color: var(--indigo-accent);"></i>
+                </div>
+                <h3 class="fw-bolder mb-0" style="letter-spacing: -1px;">Új fiók létrehozása</h3>
+                <p class="text-muted mt-2">Csatlakozz hozzánk pár másodperc alatt!</p>
+            </div>
+            
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 fw-bold small" role="alert"></div>
+                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control bg-light border-0 rounded-4 px-4" autocomplete="username" aria-required="true" placeholder="name@example.com" autofocus style="height: 60px;" />
+                    <label asp-for="Input.Email" class="text-muted ps-4">Email cím</label>
+                    <span asp-validation-for="Input.Email" class="text-danger small fw-bold"></span>
+                </div>
+                
+                <div class="form-floating mb-2 position-relative">
+                    <input asp-for="Input.Password" id="registerPassword" class="form-control bg-light border-0 rounded-4 px-4 pe-5" autocomplete="new-password" aria-required="true" placeholder="password" style="height: 60px;" />
+                    <label asp-for="Input.Password" class="text-muted ps-4">Jelszó</label>
+                    <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-4 text-muted" id="toggleRegPassword" style="cursor: pointer; z-index: 10; font-size: 1.2rem; transition: 0.2s;"></i>
+                    <span asp-validation-for="Input.Password" class="text-danger small fw-bold"></span>
+                </div>
+
+                <div id="password-strength-container" class="d-none px-2 mb-4 mt-3">
+                    <div class="d-flex gap-1 mb-3">
+                        <div class="strength-segment rounded-pill flex-fill" id="seg-1" style="height: 4px; background: #e2e8f0; transition: all 0.4s ease;"></div>
+                        <div class="strength-segment rounded-pill flex-fill" id="seg-2" style="height: 4px; background: #e2e8f0; transition: all 0.4s ease;"></div>
+                        <div class="strength-segment rounded-pill flex-fill" id="seg-3" style="height: 4px; background: #e2e8f0; transition: all 0.4s ease;"></div>
+                        <div class="strength-segment rounded-pill flex-fill" id="seg-4" style="height: 4px; background: #e2e8f0; transition: all 0.4s ease;"></div>
+                    </div>
+                    
+                    <div class="row g-2 text-muted" style="font-size: 0.8rem;">
+                        <div class="col-6 d-flex align-items-center gap-2 transition-all" id="req-length">
+                            <i class="bi bi-circle"></i> Min. 6 karakter
+                        </div>
+                        <div class="col-6 d-flex align-items-center gap-2 transition-all" id="req-upper">
+                            <i class="bi bi-circle"></i> Kis- és nagybetű
+                        </div>
+                        <div class="col-6 d-flex align-items-center gap-2 transition-all" id="req-number">
+                            <i class="bi bi-circle"></i> Tartalmaz számot
+                        </div>
+                        <div class="col-6 d-flex align-items-center gap-2 transition-all" id="req-special">
+                            <i class="bi bi-circle"></i> Speciális karakter
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-floating mb-4 position-relative mt-2">
+                    <input asp-for="Input.ConfirmPassword" id="confirmPassword" class="form-control bg-light border-0 rounded-4 px-4 pe-5" autocomplete="new-password" aria-required="true" placeholder="password" style="height: 60px;" />
+                    <label asp-for="Input.ConfirmPassword" class="text-muted ps-4">Jelszó megerősítése</label>
+                    <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-4 text-muted" id="toggleConfirmPassword" style="cursor: pointer; z-index: 10; font-size: 1.2rem; transition: 0.2s;"></i>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small fw-bold"></span>
+                </div>
+                
+                <button id="registerSubmit" type="submit" class="btn btn-premium w-100 py-3 rounded-4 shadow-sm text-uppercase fw-bold small transition-all">
+                    <span id="reg-spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                    <span id="reg-text">Fiók Létrehozása <i class="bi bi-arrow-right ms-2"></i></span>
+                </button>
+            </form>
+            
+            <div class="text-center mt-5 pt-3 border-top border-light">
+                <p class="mb-0 text-muted small">
+                    Már van fiókod? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="fw-bold text-decoration-none" style="color: var(--indigo-accent);">Jelentkezz be!</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Jelszó elrejtése/megjelenítése hover effektussal
+        function setupToggle(toggleBtnId, inputId) {
+            const btn = document.querySelector(toggleBtnId);
+            btn.addEventListener('click', function () {
+                const input = document.querySelector(inputId);
+                input.setAttribute('type', input.getAttribute('type') === 'password' ? 'text' : 'password');
+                this.classList.toggle('bi-eye');
+                this.classList.toggle('bi-eye-slash');
+                this.style.color = this.classList.contains('bi-eye') ? 'var(--indigo-accent)' : '';
+            });
+        }
+        setupToggle('#toggleRegPassword', '#registerPassword');
+        setupToggle('#toggleConfirmPassword', '#confirmPassword');
+
+        // Prémium Jelszó Analizáló (Identity Sync - Szigorú UX logika)
+        const regPassword = document.getElementById('registerPassword');
+        const strengthContainer = document.getElementById('password-strength-container');
+        const regSubmitBtn = document.getElementById('registerSubmit');
+        
+        const segments = [
+            document.getElementById('seg-1'),
+            document.getElementById('seg-2'),
+            document.getElementById('seg-3'),
+            document.getElementById('seg-4')
+        ];
+        
+        const reqs = {
+            length: document.getElementById('req-length'),
+            upper: document.getElementById('req-upper'),
+            number: document.getElementById('req-number'),
+            special: document.getElementById('req-special')
+        };
+
+        regPassword.addEventListener('input', function() {
+            const val = this.value;
+            
+            // Ha üres, elrejtjük
+            if (val.length === 0) {
+                strengthContainer.classList.add('d-none');
+                return;
+            } else {
+                strengthContainer.classList.remove('d-none');
+            }
+
+            // Identity szabályok Regex-szel való ellenőrzése
+            let rulesMet = 0;
+            const hasLength = val.length >= 6;
+            const hasUpperLower = /[A-Z]/.test(val) && /[a-z]/.test(val);
+            const hasNumber = /[0-9]/.test(val);
+            const hasSpecial = /[^A-Za-z0-9]/.test(val); // Speciális karakter
+
+            // Checklist frissítése
+            updateChecklist(reqs.length, hasLength);
+            updateChecklist(reqs.upper, hasUpperLower);
+            updateChecklist(reqs.number, hasNumber);
+            updateChecklist(reqs.special, hasSpecial);
+
+            if (hasLength) rulesMet++;
+            if (hasUpperLower) rulesMet++;
+            if (hasNumber) rulesMet++;
+            if (hasSpecial) rulesMet++;
+
+            // Színek nullázása (Szürke alapállapot)
+            segments.forEach(seg => {
+                seg.style.background = '#e2e8f0';
+                seg.style.boxShadow = 'none';
+            });
+
+            // SZIGORÚ SZÍNEZÉSI LOGIKA
+            const colorWeak = '#ef4444';     // Piros (1 feltétel - Nagyon gyenge)
+            const colorMedium = '#f97316';   // Narancs (2 feltétel - Még mindig rossz)
+            const colorAlmost = '#eab308';   // Sárga (3 feltétel - Majdnem, de még hiányzik valami!)
+            const colorPerfect = 'var(--indigo-accent)'; // Indigó (Csak 4 feltételnél!)
+
+            if (rulesMet === 1) {
+                segments[0].style.background = colorWeak;
+            } else if (rulesMet === 2) {
+                segments[0].style.background = colorMedium;
+                segments[1].style.background = colorMedium;
+            } else if (rulesMet === 3) {
+                segments[0].style.background = colorAlmost;
+                segments[1].style.background = colorAlmost;
+                segments[2].style.background = colorAlmost;
+            } else if (rulesMet === 4) {
+                // CSAK ITT kapja meg a prémium színt és a ragyogást!
+                segments.forEach(seg => {
+                    seg.style.background = colorPerfect;
+                    seg.style.boxShadow = '0 0 10px rgba(99, 102, 241, 0.4)';
+                });
+            }
+        });
+
+        // Segédfüggvény a checklist animálásához
+        function updateChecklist(element, isMet) {
+            const icon = element.querySelector('i');
+            if (isMet) {
+                icon.className = 'bi bi-check-circle-fill';
+                icon.style.color = 'var(--indigo-accent)';
+                element.style.color = 'var(--dark-slate)';
+                element.style.fontWeight = '800';
+            } else {
+                icon.className = 'bi bi-circle text-muted';
+                icon.style.color = '';
+                element.style.color = '';
+                element.style.fontWeight = 'normal';
+            }
+        }
+
+        // Űrlap beküldés animáció
+        $('#registerForm').on('submit', function () {
+            if ($(this).valid()) {
+                $('#registerSubmit').addClass('disabled');
+                $('#reg-spinner').removeClass('d-none');
+                $('#reg-text').text('Feldolgozás...');
+            }
+        });
+    </script>
+}

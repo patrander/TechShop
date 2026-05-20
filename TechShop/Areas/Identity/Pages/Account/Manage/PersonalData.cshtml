@@ -1,0 +1,36 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Személyes adatok";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h4 class="fw-bold mb-4 text-dark pb-3 border-bottom border-light">@ViewData["Title"]</h4>
+
+<div class="row">
+    <div class="col-md-10">
+        <p class="text-muted mb-4" style="line-height: 1.6;">
+            A fiókod személyes adatokat tartalmaz, amelyeket megadtál nekünk. Ez az oldal lehetővé teszi, hogy letöltsd a nálunk tárolt információidat, vagy véglegesen töröld a profilodat rendszerünkből.
+        </p>
+        
+        <div class="alert bg-light border-0 rounded-4 p-4 mb-4 shadow-sm">
+            <p class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i> Figyelem!</p>
+            <p class="mb-0 text-muted small">Ezen adatok törlése véglegesen eltávolítja a fiókodat és a rendelési előzményeidet. A folyamat nem vonható vissza.</p>
+        </div>
+        
+        <div class="d-flex flex-wrap gap-3 mt-4">
+            <form id="download-data" asp-page="DownloadPersonalData" method="post">
+                <button class="btn btn-premium rounded-pill px-4 py-2" type="submit">
+                    <i class="bi bi-download me-2"></i> Adatok letöltése
+                </button>
+            </form>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger rounded-pill px-4 py-2 fw-bold shadow-sm">
+                <i class="bi bi-trash3 me-2"></i> Fiók végleges törlése
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

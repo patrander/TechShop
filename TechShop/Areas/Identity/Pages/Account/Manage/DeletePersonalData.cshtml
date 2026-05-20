@@ -1,0 +1,29 @@
+﻿@page
+@model DeletePersonalDataModel
+@{
+    ViewData["Title"] = "Fiók végleges törlése";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h4 class="fw-bold mb-4 text-danger pb-3 border-bottom border-light">@ViewData["Title"]</h4>
+
+<div class="alert bg-danger-subtle border-0 rounded-4 p-4 mb-4">
+    <p class="fw-bold text-danger mb-0"><i class="bi bi-exclamation-octagon-fill me-2"></i> Ez a művelet nem vonható vissza!</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <form id="delete-user" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3 small fw-bold"></div>
+            @if (Model.RequirePassword)
+            {
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.Password" class="form-control bg-light border-0 rounded-4 px-4" autocomplete="current-password" aria-required="true" placeholder="Jelszó" style="height: 60px;" />
+                    <label asp-for="Input.Password" class="text-muted ps-4">Kérjük, adja meg jelszavát a törléshez</label>
+                    <span asp-validation-for="Input.Password" class="text-danger small fw-bold"></span>
+                </div>
+            }
+            <button class="btn btn-danger w-100 py-3 rounded-4 shadow-sm text-uppercase fw-bold" type="submit">Fiókom és adataim végleges törlése</button>
+        </form>
+    </div>
+</div>

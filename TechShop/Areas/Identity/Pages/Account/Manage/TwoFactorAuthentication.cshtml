@@ -1,0 +1,39 @@
+﻿@page
+@using Microsoft.AspNetCore.Http.Features
+@model TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Kétlépcsős azonosítás (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<h4 class="fw-bold mb-4 text-dark pb-3 border-bottom border-light">@ViewData["Title"]</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 55px; height: 55px;">
+            <i class="bi bi-phone-vibrate fs-3" style="color: var(--indigo-accent);"></i>
+        </div>
+        <div>
+            <h5 class="fw-bold mb-1">Hitelesítő alkalmazás</h5>
+            <p class="text-muted small mb-0">Növeld a fiókod biztonságát az okostelefonod segítségével.</p>
+        </div>
+    </div>
+
+    <div class="bg-light p-4 rounded-4">
+        @if (!Model.HasAuthenticator)
+        {
+            <p class="text-muted small mb-3">Jelenleg nincs beállítva hitelesítő alkalmazás a fiókodhoz.</p>
+            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-premium rounded-pill px-4 py-2 small fw-bold">
+                <i class="bi bi-plus-lg me-2"></i> Beállítás indítása
+            </a>
+        }
+        else
+        {
+            <div class="d-flex flex-wrap gap-2">
+                <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-outline-premium rounded-pill px-4 py-2 small fw-bold">Beállítások módosítása</a>
+                <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-outline-danger rounded-pill px-4 py-2 small fw-bold">Alaphelyzetbe állítás</a>
+            </div>
+        }
+    </div>
+</div>

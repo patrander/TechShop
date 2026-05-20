@@ -1,0 +1,75 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+
+<style>
+    /* 1. JAVÍTÁS: Alapértelmezett kék fókusz-keret felülírása lágy Indigó ragyogásra */
+    .form-control:focus, .form-select:focus {
+        border-color: var(--indigo-accent) !important;
+        box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25) !important;
+    }
+    
+    /* 2. JAVÍTÁS: A bal oldali menü gombjainak prémium stílusa */
+    .nav-pills .nav-link {
+        color: var(--dark-slate);
+        border-radius: 12px;
+        padding: 14px 20px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        .nav-pills .nav-link:hover {
+            background-color: #f8fafc;
+            color: var(--indigo-accent);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--indigo-accent) !important;
+            color: white !important;
+            box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-pills .nav-link i {
+            font-size: 1.25rem;
+        }
+</style>
+
+<div class="container py-5" data-aos="fade-in">
+    <div class="d-flex align-items-center mb-5 pb-3 border-bottom border-light">
+        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-4 shadow-sm" style="width: 60px; height: 60px;">
+            <i class="bi bi-person-bounding-box fs-3" style="color: var(--indigo-accent);"></i>
+        </div>
+        <div>
+            <h2 class="fw-bolder mb-1" style="letter-spacing: -1px;">Fiók beállításai</h2>
+            <p class="text-muted mb-0 small">Kezeld a profilodat és a biztonsági beállításaidat.</p>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <div class="col-md-4 col-lg-3">
+            <div class="premium-card p-3 bg-white">
+                <partial name="_ManageNav" />
+            </div>
+        </div>
+        
+        <div class="col-md-8 col-lg-9">
+            <div class="premium-card p-5 bg-white h-100">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

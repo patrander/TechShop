@@ -1,0 +1,57 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "E-mail beállítások";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<div class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+        <div class="bg-indigo-light rounded-circle p-2 me-3" style="background: rgba(99, 102, 241, 0.1);">
+            <i class="bi bi-envelope-check fs-4 text-primary" style="color: var(--indigo-accent) !important;"></i>
+        </div>
+        <h4 class="fw-bold mb-0">Elsődleges e-mail cím</h4>
+    </div>
+
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    <form id="email-form" method="post" class="row g-4">
+        <div asp-validation-summary="All" class="text-danger mb-3 small fw-bold"></div>
+        
+        <div class="col-12">
+            @if (Model.IsEmailConfirmed)
+            {
+                <div class="form-floating shadow-sm rounded-4 overflow-hidden position-relative">
+                    <input asp-for="Email" class="form-control border-0 bg-light px-4 fw-bold text-success" disabled style="height: 65px;" />
+                    <label asp-for="Email" class="text-muted ps-4">Aktív e-mail</label>
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3 badge bg-success-subtle text-success border border-success rounded-pill px-3 py-2 shadow-sm">
+                        <i class="bi bi-patch-check-fill me-1"></i> Hitelesítve
+                    </span>
+                </div>
+            }
+            else
+            {
+                <div class="form-floating shadow-sm rounded-4 overflow-hidden mb-2">
+                    <input asp-for="Email" class="form-control border-0 bg-light px-4" disabled style="height: 65px;" />
+                    <label asp-for="Email" class="text-muted ps-4">Hitelesítetlen e-mail</label>
+                </div>
+                <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link text-decoration-none fw-bold small p-0 ms-2" style="color: var(--indigo-accent);">Kód újraküldése <i class="bi bi-send-fill ms-1"></i></button>
+            }
+        </div>
+        
+        <div class="col-12 mt-4 pt-3 border-top border-light">
+            <h6 class="text-muted small fw-bold text-uppercase mb-4 ms-2">Új cím beállítása</h6>
+            <div class="form-floating shadow-sm rounded-4 overflow-hidden">
+                <input asp-for="Input.NewEmail" class="form-control border-0 bg-light px-4" autocomplete="email" placeholder="new" style="height: 65px;" />
+                <label asp-for="Input.NewEmail" class="text-muted ps-4">Új e-mail cím</label>
+            </div>
+            <span asp-validation-for="Input.NewEmail" class="text-danger small fw-bold d-block mt-1 ms-2"></span>
+        </div>
+        
+        <div class="col-12 mt-4">
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-premium px-5 py-3 shadow-sm text-uppercase fw-bold">
+                E-mail frissítése <i class="bi bi-arrow-repeat ms-2"></i>
+            </button>
+        </div>
+    </form>
+</div>

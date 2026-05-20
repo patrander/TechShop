@@ -1,0 +1,76 @@
+﻿@model TechShop.Models.Product
+@{
+    ViewData["Title"] = "Új termék hozzáadása";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-8 col-lg-6" data-aos="fade-up">
+        <div class="premium-card p-5 bg-white">
+            <div class="d-flex align-items-center mb-5 pb-3 border-bottom border-light">
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-4 shadow-sm" style="width: 60px; height: 60px;">
+                    <i class="bi bi-plus-lg fs-3" style="color: var(--indigo-accent);"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bolder mb-1" style="letter-spacing: -1px;">Új termék</h3>
+                    <p class="text-muted mb-0 small">Katalógus bővítése</p>
+                </div>
+            </div>
+
+            <form id="createProductForm" asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-4 fw-bold small p-3 bg-light rounded-4 border-start border-danger border-4 @(ViewData.ModelState.IsValid ? "d-none" : "")"></div>
+                
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label text-muted small fw-bold text-uppercase ms-2">Termék neve</label>
+                    <input asp-for="Name" class="form-control bg-light border-0 rounded-4 px-4 py-3" placeholder="Pl. iPhone 15 Pro" />
+                    <span asp-validation-for="Name" class="text-danger small fw-bold ms-2"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label text-muted small fw-bold text-uppercase ms-2">Rövid leírás</label>
+                    <textarea asp-for="Description" class="form-control bg-light border-0 rounded-4 px-4 py-3" rows="3" placeholder="Jellemzők, paramétererek..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger small fw-bold ms-2"></span>
+                </div>
+
+                <div class="row mb-5">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <label asp-for="Price" class="form-label text-muted small fw-bold text-uppercase ms-2">Bruttó ár (Ft)</label>
+                        <input asp-for="Price" class="form-control bg-light border-0 rounded-4 px-4 py-3" placeholder="0" />
+                        <span asp-validation-for="Price" class="text-danger small fw-bold ms-2"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase ms-2">Kategória</label>
+                        <select asp-for="CategoryId" class="form-select bg-light border-0 rounded-4 px-4 py-3" asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "Name"))">
+                            <option value="">-- Válassz --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small fw-bold ms-2"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3">
+                    <a asp-action="Index" class="btn btn-outline-premium px-4 py-2 rounded-pill small fw-bold">Mégsem</a>
+                    <button id="createSubmit" type="submit" class="btn btn-premium px-5 py-2 rounded-pill small fw-bold shadow-sm transition-all">
+                        <span id="create-spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                        <span id="create-text">Mentés <i class="bi bi-check2 ms-1"></i></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        $('#createProductForm').on('submit', function () {
+            // Csak akkor indul el a töltés, ha az űrlap kliens oldalon érvényes
+            if ($(this).valid()) {
+                $('#createSubmit').addClass('disabled');
+                $('#create-spinner').removeClass('d-none');
+                $('#create-text').text('Feldolgozás...');
+            }
+        });
+    </script>
+}

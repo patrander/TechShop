@@ -1,0 +1,76 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Bejelentkezés";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 col-lg-5" data-aos="fade-up">
+        <div class="premium-card p-5 bg-white">
+            <div class="text-center mb-5">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-sm" style="width: 70px; height: 70px; background: #e0e7ff;">
+                    <i class="bi bi-box-arrow-in-right fs-2" style="color: var(--indigo-accent);"></i>
+                </div>
+                <h3 class="fw-bolder mb-0" style="letter-spacing: -1px;">Üdvözlünk újra!</h3>
+                <p class="text-muted mt-2">Kérjük, jelentkezz be a folytatáshoz.</p>
+            </div>
+            
+            <form id="account" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 fw-bold small" role="alert"></div>
+                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control bg-light border-0 rounded-4 px-4" autocomplete="username" aria-required="true" placeholder="name@example.com" autofocus style="height: 60px;" />
+                    <label asp-for="Input.Email" class="text-muted ps-4">Email cím</label>
+                    <span asp-validation-for="Input.Email" class="text-danger small fw-bold"></span>
+                </div>
+                
+                <div class="form-floating mb-4 position-relative">
+                    <input asp-for="Input.Password" id="loginPassword" class="form-control bg-light border-0 rounded-4 px-4 pe-5" autocomplete="current-password" aria-required="true" placeholder="password" style="height: 60px;" />
+                    <label asp-for="Input.Password" class="text-muted ps-4">Jelszó</label>
+                    <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-4 text-muted" id="toggleLoginPassword" style="cursor: pointer; z-index: 10; font-size: 1.2rem;"></i>
+                    <span asp-validation-for="Input.Password" class="text-danger small fw-bold"></span>
+                </div>
+                
+                <div class="checkbox mb-4 ps-2">
+                    <label asp-for="Input.RememberMe" class="form-label text-muted fw-bold small" style="cursor: pointer;">
+                        <input class="form-check-input me-2 shadow-sm" asp-for="Input.RememberMe" />
+                        Emlékezz rám
+                    </label>
+                </div>
+                
+                <button id="login-submit" type="submit" class="btn btn-premium w-100 py-3 rounded-4 shadow-sm text-uppercase fw-bold small transition-all">
+                    <span id="login-spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                    <span id="login-text">Belépés <i class="bi bi-arrow-right ms-2"></i></span>
+                </button>
+            </form>
+            
+            <div class="text-center mt-5 pt-3 border-top border-light">
+                <p class="mb-0 text-muted small">
+                    Nincs még fiókod? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="fw-bold text-decoration-none" style="color: var(--indigo-accent);">Regisztrálj itt</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const togglePassword = document.querySelector('#toggleLoginPassword');
+        const password = document.querySelector('#loginPassword');
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+        $('#account').on('submit', function () {
+            if ($(this).valid()) {
+                $('#login-submit').addClass('disabled');
+                $('#login-spinner').removeClass('d-none');
+                $('#login-text').text('Kérjük várjon...');
+            }
+        });
+    </script>
+}

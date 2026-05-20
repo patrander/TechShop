@@ -1,0 +1,119 @@
+﻿@model IEnumerable<TechShop.Models.Product>
+
+@{
+    ViewData["Title"] = "Főoldal";
+    int delay = 100;
+    bool hasActiveFilter = !string.IsNullOrEmpty(ViewBag.CurrentSearch) || ViewBag.CurrentCategory != null || !string.IsNullOrEmpty(ViewBag.CurrentSort);
+}
+
+@if (!hasActiveFilter)
+{
+    <div class="text-center py-5 my-5" data-aos="zoom-out" data-aos-duration="1200">
+        <div class="d-inline-block px-3 py-1 mb-4 rounded-pill fw-bold" style="background: #e0e7ff; color: var(--indigo-accent); font-size: 0.85rem; letter-spacing: 1px;">
+            A JÖVŐ TECHNOLÓGIÁJA
+        </div>
+        <h1 class="display-3 fw-bolder mb-4" style="letter-spacing: -1.5px; color: var(--dark-slate);">
+            Fedezd fel a <br /> <span style="color: var(--indigo-accent);">következő szintet.</span>
+        </h1>
+        <p class="lead mx-auto mb-0" style="max-width: 500px; color: #64748b; font-weight: 400;">
+            Kivételes eszközök kompromisszumok nélkül. Találd meg azt, ami igazán hozzád illik.
+        </p>
+    </div>
+}
+
+<div class="row justify-content-center mb-5" data-aos="fade-up">
+    <div class="col-12 col-xl-10">
+        <div class="filter-pill">
+            <form asp-controller="Home" asp-action="Index" method="get" class="row g-0 align-items-center px-2">
+                <div class="col-lg-4 col-md-12 border-end border-light px-2 py-1">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="searchString" class="form-control form-control-sm" placeholder="Keresés..." value="@ViewBag.CurrentSearch" />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 border-end border-light px-3 py-1">
+                    <select name="categoryId" class="form-select form-select-sm">
+                        <option value="">Kategória</option>
+                        @foreach (var cat in ViewBag.Categories)
+                        {
+                            <!option value="@cat.CategoryId" @(ViewBag.CurrentCategory != null && (int)ViewBag.CurrentCategory == cat.CategoryId ? "selected" : "")>@cat.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6 px-3 py-1">
+                    <select name="sortOrder" class="form-select form-select-sm">
+                        <!option value="name_asc" @(ViewBag.CurrentSort == "name_asc" ? "selected" : "")>A-Z</!option>
+                        <!option value="price_asc" @(ViewBag.CurrentSort == "price_asc" ? "selected" : "")>Legolcsóbb</!option>
+                        <!option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Legdrágább</!option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-12 d-flex justify-content-end p-2 gap-2">
+                    @if (hasActiveFilter)
+                    {
+                        <a asp-action="Index" class="btn btn-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-x-lg text-muted"></i>
+                        </a>
+                    }
+                    <button type="submit" class="btn btn-premium w-100 py-2">Szűrés</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5 pb-5">
+    @foreach (var item in Model)
+    {
+        bool isPro = item.Price > 400000;
+        <div class="col" data-aos="fade-up" data-aos-delay="@delay">
+            <div class="card h-100 premium-card @(isPro ? "pro-card" : "")">
+                
+                @if (isPro)
+                {
+                    <div class="position-absolute top-0 end-0 m-4" style="z-index: 10;">
+                        <span class="badge rounded-pill bg-light text-dark py-2 px-3 fw-bold shadow-sm" style="font-size: 0.75rem; letter-spacing: 0.5px;">PRO EXCLUSIVE</span>
+                    </div>
+                }
+
+                <div class="icon-wrapper text-center d-flex align-items-center justify-content-center">
+                    @if (item.Category.Name.Contains("Laptop"))
+                    {
+                        <i class="bi bi-laptop" style="font-size: 4rem; color: #94a3b8;"></i>
+                    }
+                    else if (item.Category.Name.Contains("Okostelefon"))
+                    {
+
+                        <i class="bi bi-phone" style="font-size: 4rem; color: #94a3b8;"></i>
+                    }
+                    else if (item.Category.Name.Contains("Fejhallgató"))
+                    {
+
+                        <i class="bi bi-headphones" style="font-size: 4rem; color: #94a3b8;"></i>
+                    }
+                    else
+                    {
+
+                        <i class="bi bi-smartwatch" style="font-size: 4rem; color: #94a3b8;"></i>
+                    }
+                </div>
+                
+                <div class="card-body p-4 d-flex flex-column">
+                    <p class="text-uppercase fw-bold mb-2" style="font-size: 0.75rem; color: var(--indigo-accent); letter-spacing: 1px;">@item.Category.Name</p>
+                    <h4 class="fw-bolder mb-3" style="letter-spacing: -0.5px;">@item.Name</h4>
+                    <p class="text-muted flex-grow-1" style="font-size: 0.95rem; line-height: 1.6;">@item.Description</p>
+                    
+                    <div class="d-flex justify-content-between align-items-end mt-4">
+                        <div>
+                            <span class="d-block text-muted small fw-bold mb-1">Ár</span>
+                            <span class="h4 fw-bolder mb-0 price-tag">@item.Price.ToString("C0")</span>
+                        </div>
+                        <a asp-controller="cart" asp-action="buy" asp-route-id="@item.ProductId" class="btn btn-dark rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-bag-plus fs-5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        delay += 50;
+    }
+</div>

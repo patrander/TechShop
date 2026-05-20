@@ -1,0 +1,34 @@
+﻿@model IEnumerable<TechShop.Models.Product>
+<div class="container py-4" data-aos="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bolder mb-0" style="letter-spacing: -1px;"><i class="bi bi-box text-muted me-2"></i> Katalógus</h2>
+        <a asp-action="Create" class="btn btn-premium shadow-sm py-2 px-4 rounded-pill small"><i class="bi bi-plus-lg me-2"></i> ÚJ TERMÉK</a>
+    </div>
+    <div class="premium-card overflow-hidden">
+        <table class="table align-middle table-hover mb-0 table-borderless text-center">
+            <thead style="background: #f1f5f9;">
+                <tr class="text-muted small text-uppercase" style="letter-spacing: 0.5px;">
+                    <th class="py-3 text-start ps-4">Név</th>
+                    <th class="py-3">Kategória</th>
+                    <th class="py-3">Alapár</th>
+                    <th class="py-3 text-end pe-4">Művelet</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="border-bottom border-light">
+                        <td class="text-start ps-4 fw-bold text-dark fs-5">@item.Name</td>
+                        <td><span class="badge rounded-pill text-secondary bg-light border px-3 py-2">@item.Category.Name</span></td>
+                        <td class="fw-bold @(item.Price > 400000 ? "text-danger" : "text-success")">@item.Price.ToString("C0")</td>
+                        <td class="text-end pe-4">
+                            <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-premium btn-sm rounded-pill py-1 px-3">
+                                <i class="bi bi-pencil me-1"></i> Szerkesztés
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
