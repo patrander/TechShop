@@ -22,6 +22,3 @@ Originally created as a university assignment, this project has undergone a **ma
 * **Frontend:** HTML5, Custom CSS (Heavily customized Bootstrap 5), Vanilla JS, AOS Animations
 * **Auth:** ASP.NET Core Identity
 
-
-   ```bash
-   git clone [https://github.com/yourusername/TechShop.git](https://github.com/yourusername/TechShop.git)
