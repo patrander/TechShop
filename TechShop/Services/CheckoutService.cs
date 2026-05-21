@@ -22,7 +22,7 @@ namespace TechShop.Services
             var cart = _cartService.GetCartItems();
             if (cart == null || cart.Count == 0) return false;
 
-            // Pontosan a te eredeti értékadásaid
+            
             order.TotalPrice = (int)cart.Sum(item => item.Product.Price * item.Quantity);
             order.OrderDate = DateTime.Now;
             order.Status = "Feldolgozás alatt";

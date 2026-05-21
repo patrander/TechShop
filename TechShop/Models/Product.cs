@@ -22,7 +22,7 @@ namespace TechShop.Models
         [Display(Name = "Ár (Ft)")]
         public decimal Price { get; set; }
 
-        // Idegen kulcs és navigációs tulajdonság a kategóriához
+        
         [Required(ErrorMessage = "Válassz kategóriát!")]
         [Display(Name = "Kategória")]
         public int CategoryId { get; set; }

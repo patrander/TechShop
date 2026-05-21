@@ -1,4 +1,4 @@
-﻿// FÁJL HELYE: Services/IProductAdminService.cs
+﻿
 
 using System.Collections.Generic;
 using TechShop.Models;

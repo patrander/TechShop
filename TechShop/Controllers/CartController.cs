@@ -16,7 +16,7 @@ namespace TechShop.Controllers
             _checkoutService = checkoutService;
         }
 
-        // --- KOSÁR MEGJELENÍTÉSE ---
+    
         public IActionResult Index()
         {
             var cart = _cartService.GetCartItems();
@@ -25,8 +25,8 @@ namespace TechShop.Controllers
             return View();
         }
 
-        // --- TERMÉK KOSÁRBA TÉTELE ---
-        [Route("buy/{id}")] // Visszakerült a te eredeti útválasztásod!
+       
+        [Route("buy/{id}")] 
         public IActionResult Buy(int id)
         {
             var productName = _cartService.AddToCart(id);
@@ -37,16 +37,13 @@ namespace TechShop.Controllers
             return RedirectToAction("Index");
         }
 
-        // --- TERMÉK TÖRLÉSE A KOSÁRBÓL ---
-        [Route("remove/{id}")] // Visszakerült a te eredeti útválasztásod!
-        public IActionResult Remove(int id)
+                [Route("remove/{id}")]         public IActionResult Remove(int id)
         {
             _cartService.RemoveFromCart(id);
             return RedirectToAction("Index");
         }
 
-        // --- PÉNZTÁR (GET) ---
-        [Authorize]
+                [Authorize]
         public IActionResult Checkout()
         {
             var cart = _cartService.GetCartItems();
@@ -57,8 +54,7 @@ namespace TechShop.Controllers
             return View();
         }
 
-        // --- PÉNZTÁR (POST) ---
-        [HttpPost]
+                [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         public IActionResult Checkout(Order order)
@@ -72,8 +68,7 @@ namespace TechShop.Controllers
 
                 if (success)
                 {
-                    // Visszakapta az eredeti Checkout2 nézetet a te logikád alapján!
-                    return View("Checkout2", order);
+                                        return View("Checkout2", order);
                 }
             }
 

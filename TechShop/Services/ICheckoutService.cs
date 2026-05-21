@@ -1,6 +1,6 @@
-﻿// FÁJL HELYE: Services/ICheckoutService.cs
+﻿
 
-using TechShop.Models; // Vagy TechShop.DAL, ahol az Order modelled van
+using TechShop.Models; 
 
 namespace TechShop.Services
 {

@@ -1,7 +1,7 @@
-﻿// FÁJL HELYE: Services/IProductCatalogService.cs
+﻿
 
 using System.Collections.Generic;
-using TechShop.Models; // Ide mutat a Category és Product modelled
+using TechShop.Models; 
 
 namespace TechShop.Services
 {

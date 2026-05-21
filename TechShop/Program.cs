@@ -11,7 +11,7 @@ namespace TechShop
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<TechShopIdentityDbContext>(opts => {
@@ -23,12 +23,12 @@ namespace TechShop
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
-            builder.Services.AddHttpContextAccessor(); // Kell a Session eléréséhez a CartService-ben
+            builder.Services.AddHttpContextAccessor(); 
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IProductCatalogService, ProductCatalogService>();
             builder.Services.AddScoped<IProductAdminService, ProductAdminService>();
             builder.Services.AddScoped<IOrderHandlingService, OrderHandlingService>();
-            builder.Services.AddScoped<ICheckoutService, CheckoutService>(); // Ez az új checkout háttérlogika
+            builder.Services.AddScoped<ICheckoutService, CheckoutService>(); 
 
 
             var app = builder.Build();

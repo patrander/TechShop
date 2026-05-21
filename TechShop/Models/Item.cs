@@ -2,7 +2,7 @@
 {
     public class Item
     {
-        public Product Product { get; set; } // A könyv helyett mi terméket használunk
+        public Product Product { get; set; } 
         public int Quantity { get; set; }
     }
 }

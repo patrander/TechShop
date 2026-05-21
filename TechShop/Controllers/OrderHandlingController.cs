@@ -1,9 +1,7 @@
-﻿// FÁJL HELYE: Controllers/OrderHandlingController.cs
-
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TechShop.Services; // A Service réteg beimportálása
-
+using TechShop.Services; 
 namespace TechShop.Controllers
 {
     [Authorize]
@@ -11,8 +9,7 @@ namespace TechShop.Controllers
     {
         private readonly IOrderHandlingService _orderService;
 
-        // Csak az Interfészt ismerjük, a konkrét adatbázist nem! (DIP - Függőség megfordítása)
-        public OrderHandlingController(IOrderHandlingService orderService)
+                public OrderHandlingController(IOrderHandlingService orderService)
         {
             _orderService = orderService;
         }

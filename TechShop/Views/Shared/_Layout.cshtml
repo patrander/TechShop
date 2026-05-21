@@ -26,7 +26,7 @@
             color: var(--dark-slate);
         }
 
-        /* Glassmorphism Navbar */
+       
         .glass-nav { 
             background: rgba(255, 255, 255, 0.75) !important;
             backdrop-filter: blur(16px);
@@ -40,7 +40,7 @@
         .nav-link { font-weight: 600; color: #475569 !important; padding: 0.5rem 1rem !important; border-radius: 50px; transition: all 0.2s; }
         .nav-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--indigo-accent) !important; }
 
-        /* Gombok újraalkotva */
+       
         .btn-premium {
             background-color: var(--dark-slate);
             color: white;
@@ -73,7 +73,7 @@
             color: white;
         }
 
-        /* Lebegő Kártyák */
+        
         .premium-card {
             background: #ffffff;
             border-radius: 28px;
@@ -86,7 +86,7 @@
             box-shadow: var(--hover-shadow);
         }
 
-        /* Ikon konténer a kártyán belül */
+        
         .icon-wrapper {
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             border-radius: 20px;
@@ -101,7 +101,7 @@
         .icon-wrapper i { transition: all 0.5s ease; }
         .premium-card:hover .icon-wrapper i { color: var(--indigo-accent) !important; transform: scale(1.1); }
 
-        /* Szűrősáv */
+        
         .filter-pill {
             background: rgba(255,255,255,0.9);
             backdrop-filter: blur(10px);
@@ -120,9 +120,9 @@
         .filter-pill .form-select { cursor: pointer; }
         .filter-pill .input-group-text { background: transparent; border: none; }
 
-        /* Valódi, prémium sötét dizájn a PRO termékeknek */
+        
         .premium-card.pro-card {
-            background: #0f172a !important; /* Mély sötétkék/fekete háttér */
+            background: #0f172a !important;
             color: #f8fafc !important;
         }
         .pro-card h4 { color: #ffffff !important; }
@@ -131,7 +131,7 @@
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
         }
         .pro-card .icon-wrapper i { color: #cbd5e1 !important; }
-        .pro-card .price-tag { color: #34d399 !important; } /* Smaragdzöld prémium árjelző */
+        .pro-card .price-tag { color: #34d399 !important; } 
         .pro-card .btn-dark {
             background: #ffffff !important;
             color: #0f172a !important;
@@ -141,7 +141,7 @@
             color: white !important;
         }
 
-        /* Prémium Lebegő Értesítés (Toast) */
+       
         .premium-toast-container {
             position: fixed;
             bottom: 30px;
@@ -168,7 +168,7 @@
             opacity: 1;
         }
 
-        /* PRÉMIUM KOSÁR JELVÉNY (MICRO-BADGE) STÍLUS */
+        
         .bg-premium-badge {
             background-color: var(--indigo-accent) !important;
             color: white !important;
@@ -202,7 +202,7 @@
                     }
                 }
             }
-            catch { /* Biztonsági elkapás, ha üres lenne a JSON */ }
+            catch {  }
         }
     }
 

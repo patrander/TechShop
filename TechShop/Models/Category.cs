@@ -11,7 +11,7 @@ namespace TechShop.Models
         [Display(Name = "Kategória neve")]
         public string Name { get; set; }
 
-        // Navigációs tulajdonság: Egy kategóriához több termék is tartozhat
+        
         public virtual ICollection<Product> Products { get; set; }
     }
 }

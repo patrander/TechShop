@@ -15,7 +15,7 @@ namespace TechShop.Models
                 context.Database.Migrate();
             }
 
-            // 1. Kategóriák bővítése
+            
             if (!context.Categories.Any())
             {
                 context.Categories.AddRange(
@@ -27,7 +27,7 @@ namespace TechShop.Models
                 context.SaveChanges();
             }
 
-            // 2. Termékek bővítése
+            
             if (!context.Products.Any())
             {
                 var laptopCategory = context.Categories.First(c => c.Name == "Laptopok");

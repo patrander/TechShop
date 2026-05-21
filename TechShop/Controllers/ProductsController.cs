@@ -1,10 +1,8 @@
-﻿// FÁJL HELYE: Controllers/ProductsController.cs
-
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechShop.Models;
-using TechShop.Services; // Az új Service réteg importálása
-
+using TechShop.Services; 
 namespace TechShop.Controllers
 {
     [Authorize]
@@ -12,28 +10,24 @@ namespace TechShop.Controllers
     {
         private readonly IProductAdminService _adminService;
 
-        // Csak a Service-t injektáljuk, az adatbázist már nem!
-        public ProductsController(IProductAdminService adminService)
+                public ProductsController(IProductAdminService adminService)
         {
             _adminService = adminService;
         }
 
-        // --- 1. TERMÉKEK LISTÁZÁSA ---
-        public IActionResult Index()
+                public IActionResult Index()
         {
             var products = _adminService.GetAllProducts();
             return View(products);
         }
 
-        // --- 2. ÚJ TERMÉK LÉTREHOZÁSA (GET) ---
-        public IActionResult Create()
+                public IActionResult Create()
         {
             ViewBag.Categories = _adminService.GetAllCategories();
             return View();
         }
 
-        // --- 3. ÚJ TERMÉK LÉTREHOZÁSA (POST) ---
-        [HttpPost]
+                [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
@@ -50,8 +44,7 @@ namespace TechShop.Controllers
             return View(product);
         }
 
-        // --- 4. TERMÉK SZERKESZTÉSE (GET) ---
-        public IActionResult Edit(int? id)
+                public IActionResult Edit(int? id)
         {
             if (id == null) return NotFound();
 
@@ -62,8 +55,7 @@ namespace TechShop.Controllers
             return View(product);
         }
 
-        // --- 5. TERMÉK SZERKESZTÉSE (POST) ---
-        [HttpPost]
+                [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Product product)
         {
@@ -82,8 +74,7 @@ namespace TechShop.Controllers
             return View(product);
         }
 
-        // --- 6. TERMÉK TÖRLÉSE (GET) ---
-        public IActionResult Delete(int? id)
+                public IActionResult Delete(int? id)
         {
             if (id == null) return NotFound();
 
@@ -93,8 +84,7 @@ namespace TechShop.Controllers
             return View(product);
         }
 
-        // --- 7. TERMÉK TÖRLÉSE (POST) ---
-        [HttpPost, ActionName("Delete")]
+                [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {

@@ -1,5 +1,4 @@
-﻿// FÁJL HELYE: Services/IOrderHandlingService.cs
-
+﻿
 using System.Collections.Generic;
 using TechShop.Models;
 

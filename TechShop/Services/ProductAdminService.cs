@@ -1,4 +1,4 @@
-﻿// FÁJL HELYE: Services/ProductAdminService.cs
+﻿
 
 using System.Collections.Generic;
 using System.Linq;

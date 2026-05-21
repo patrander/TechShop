@@ -6,7 +6,7 @@ namespace TechShop.Services
     public interface ICartService
     {
         List<Item> GetCartItems();
-        string AddToCart(int productId); // Visszaadja a termék nevét az üzenethez
+        string AddToCart(int productId); 
         void RemoveFromCart(int productId);
         void ClearCart();
         decimal GetTotal();

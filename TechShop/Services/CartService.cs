@@ -30,7 +30,7 @@ namespace TechShop.Services
             if (product == null) return null;
 
             var cart = GetCartItems();
-            // A te eredeti isExist logikád kiváltása egy elegánsabb beépített módszerrel
+            
             var existingItem = cart.FirstOrDefault(i => i.Product.ProductId == productId);
 
             if (existingItem != null)
