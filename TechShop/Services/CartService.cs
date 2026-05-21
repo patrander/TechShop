@@ -1,102 +1,71 @@
-﻿// FÁJL HELYE: Services/CartService.cs
-
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using TechShop.DAL;
-using TechShop.Models; // Tartalmazza a Product, OrderItem és TechShopIdentityDbContext osztályokat
-// Megjegyzés: Ha a TechShopIdentityDbContext pl. a TechShop.Data névtérben van, 
-// akkor add hozzá a "using TechShop.Data;" sort is!
+using TechShop.Models;
 
 namespace TechShop.Services
 {
     public class CartService : ICartService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly TechShopIdentityDbContext _context;
-        private const string CartSessionKey = "TechShop_Cart";
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        // Dependency Injection-nel bekérjük a HttpContext-et (a Session miatt) és az Adatbázist
-        public CartService(IHttpContextAccessor httpContextAccessor, TechShopIdentityDbContext context)
+        public CartService(TechShopIdentityDbContext context, IHttpContextAccessor httpContextAccessor)
         {
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        // Segédtulajdonság a Session egyszerűbb eléréséhez
         private ISession Session => _httpContextAccessor.HttpContext?.Session;
 
-        public List<OrderItem> GetCartItems()
+        public List<Item> GetCartItems()
         {
-            if (Session == null) return new List<OrderItem>();
-
-            var sessionData = Session.GetString(CartSessionKey);
-            if (string.IsNullOrEmpty(sessionData))
-            {
-                return new List<OrderItem>();
-            }
-            return JsonSerializer.Deserialize<List<OrderItem>>(sessionData);
+            return SessionHelper.GetObjectFromJson<List<Item>>(Session, "cart") ?? new List<Item>();
         }
 
-        public void AddToCart(int productId)
+        public string AddToCart(int productId)
         {
-            if (Session == null) return;
+            var product = _context.Products.Find(productId);
+            if (product == null) return null;
 
             var cart = GetCartItems();
-            var product = _context.Products.Find(productId);
+            // A te eredeti isExist logikád kiváltása egy elegánsabb beépített módszerrel
+            var existingItem = cart.FirstOrDefault(i => i.Product.ProductId == productId);
 
-            if (product != null)
+            if (existingItem != null)
             {
-                var existingItem = cart.FirstOrDefault(c => c.ProductId == productId);
-                if (existingItem != null)
-                {
-                    existingItem.Quantity++;
-                }
-                else
-                {
-                    cart.Add(new OrderItem
-                    {
-                        ProductId = product.ProductId,
-                        Product = product,
-                        Quantity = 1,
-                        Price = (int)product.Price
-                    });
-                }
-
-                Session.SetString(CartSessionKey, JsonSerializer.Serialize(cart));
+                existingItem.Quantity++;
             }
+            else
+            {
+                cart.Add(new Item { Product = product, Quantity = 1 });
+            }
+
+            SessionHelper.SetObjectAsJson(Session, "cart", cart);
+            return product.Name;
         }
 
         public void RemoveFromCart(int productId)
         {
-            if (Session == null) return;
-
             var cart = GetCartItems();
-            var item = cart.FirstOrDefault(c => c.ProductId == productId);
+            var item = cart.FirstOrDefault(i => i.Product.ProductId == productId);
+
             if (item != null)
             {
-                if (item.Quantity > 1)
-                {
-                    item.Quantity--;
-                }
-                else
-                {
-                    cart.Remove(item);
-                }
-                Session.SetString(CartSessionKey, JsonSerializer.Serialize(cart));
+                cart.Remove(item);
+                SessionHelper.SetObjectAsJson(Session, "cart", cart);
             }
         }
 
         public void ClearCart()
         {
-            Session?.Remove(CartSessionKey);
+            Session?.Remove("cart");
         }
 
         public decimal GetTotal()
         {
-            return GetCartItems().Sum(item => item.Price * item.Quantity);
+            return GetCartItems().Sum(item => item.Product.Price * item.Quantity);
         }
     }
 }

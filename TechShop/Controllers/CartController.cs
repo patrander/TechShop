@@ -1,50 +1,83 @@
-﻿// FÁJL HELYE: Controllers/CartController.cs
-
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TechShop.Services; // Beimportáljuk az új Service rétegünket
+using TechShop.Models;
+using TechShop.Services;
 
 namespace TechShop.Controllers
 {
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
+        private readonly ICheckoutService _checkoutService;
 
-        // A kontroller már nem látja az adatbázist és a Session-t sem, csak az Interfészt!
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, ICheckoutService checkoutService)
         {
             _cartService = cartService;
+            _checkoutService = checkoutService;
         }
 
-        // Kosár oldal (Index)
+        // --- KOSÁR MEGJELENÍTÉSE ---
         public IActionResult Index()
         {
-            ViewBag.Total = _cartService.GetTotal();
-            var items = _cartService.GetCartItems();
-            return View(items);
+            var cart = _cartService.GetCartItems();
+            ViewBag.cart = cart;
+            ViewBag.total = _cartService.GetTotal();
+            return View();
         }
 
-        // Termék hozzáadása a kosárhoz
-        public IActionResult Add(int id)
+        // --- TERMÉK KOSÁRBA TÉTELE ---
+        [Route("buy/{id}")] // Visszakerült a te eredeti útválasztásod!
+        public IActionResult Buy(int id)
         {
-            _cartService.AddToCart(id);
-            TempData["Success"] = "A termék sikeresen a kosárba került!";
-            return RedirectToAction("Index", "Home");
+            var productName = _cartService.AddToCart(id);
+            if (productName != null)
+            {
+                TempData["SuccessMessage"] = $"{productName} sikeresen a kosaradba került!";
+            }
+            return RedirectToAction("Index");
         }
 
-        // Mennyiség csökkentése / Eltávolítás
+        // --- TERMÉK TÖRLÉSE A KOSÁRBÓL ---
+        [Route("remove/{id}")] // Visszakerült a te eredeti útválasztásod!
         public IActionResult Remove(int id)
         {
             _cartService.RemoveFromCart(id);
-            TempData["Info"] = "Kosár frissítve.";
             return RedirectToAction("Index");
         }
 
-        // Kosár teljes kiürítése
-        public IActionResult Clear()
+        // --- PÉNZTÁR (GET) ---
+        [Authorize]
+        public IActionResult Checkout()
         {
-            _cartService.ClearCart();
-            TempData["Info"] = "A kosár kiürítve.";
-            return RedirectToAction("Index");
+            var cart = _cartService.GetCartItems();
+            if (cart == null || cart.Count == 0) return RedirectToAction("Index");
+
+            ViewBag.cart = cart;
+            ViewBag.total = _cartService.GetTotal();
+            return View();
+        }
+
+        // --- PÉNZTÁR (POST) ---
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public IActionResult Checkout(Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                var cart = _cartService.GetCartItems();
+                if (cart == null || cart.Count == 0) return RedirectToAction("Index");
+
+                bool success = _checkoutService.ProcessCheckout(order);
+
+                if (success)
+                {
+                    // Visszakapta az eredeti Checkout2 nézetet a te logikád alapján!
+                    return View("Checkout2", order);
+                }
+            }
+
+            return View(order);
         }
     }
 }
