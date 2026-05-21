@@ -22,8 +22,6 @@ Originally created as a university assignment, this project has undergone a **ma
 * **Frontend:** HTML5, Custom CSS (Heavily customized Bootstrap 5), Vanilla JS, AOS Animations
 * **Auth:** ASP.NET Core Identity
 
-## 🛠️ How to Run Locally
 
-1. **Clone the repository:**
    ```bash
    git clone [https://github.com/yourusername/TechShop.git](https://github.com/yourusername/TechShop.git)
