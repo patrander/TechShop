@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TechShop.DAL;
 using TechShop.Models;
 using Microsoft.AspNetCore.Identity;
+using TechShop.Services;
 namespace TechShop
 {
     public class Program
@@ -21,6 +22,12 @@ namespace TechShop
             builder.Services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
+
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderHandlingService, OrderHandlingService>();
+            builder.Services.AddScoped<IProductCatalogService, ProductCatalogService>();
+            builder.Services.AddScoped<IProductAdminService, ProductAdminService>();
 
 
             var app = builder.Build();

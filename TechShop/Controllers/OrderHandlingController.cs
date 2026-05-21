@@ -1,49 +1,41 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// FÁJL HELYE: Controllers/OrderHandlingController.cs
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TechShop.DAL;
+using TechShop.Services; // A Service réteg beimportálása
 
 namespace TechShop.Controllers
 {
     [Authorize]
     public class OrderHandlingController : Controller
     {
-        private readonly TechShopIdentityDbContext _context;
+        private readonly IOrderHandlingService _orderService;
 
-        public OrderHandlingController(TechShopIdentityDbContext context)
+        // Csak az Interfészt ismerjük, a konkrét adatbázist nem! (DIP - Függőség megfordítása)
+        public OrderHandlingController(IOrderHandlingService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
-        // Főoldal: Rendelések listája (legújabbtól lefelé)
         public IActionResult Index()
         {
-            var orders = _context.Orders.OrderByDescending(o => o.OrderDate).ToList();
+            var orders = _orderService.GetAllOrders();
             return View(orders);
         }
 
-        // Részletek megtekintése (itt látja az admin, mit vettek pontosan)
         public IActionResult Details(int id)
         {
-            var order = _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(i => i.Product) // Behúzzuk a termékeket is
-                .FirstOrDefault(o => o.OrderId == id);
+            var order = _orderService.GetOrderDetails(id);
 
             if (order == null) return NotFound();
             return View(order);
         }
 
-        // Státusz frissítése
         [HttpPost]
         public IActionResult UpdateStatus(int id, string newStatus)
         {
-            var order = _context.Orders.Find(id);
-            if (order != null)
-            {
-                order.Status = newStatus;
-                _context.SaveChanges();
-            }
+            _orderService.UpdateOrderStatus(id, newStatus);
+
             TempData["SuccessMessage"] = $"A rendelés új státusza: {newStatus}";
             return RedirectToAction(nameof(Details), new { id = id });
         }

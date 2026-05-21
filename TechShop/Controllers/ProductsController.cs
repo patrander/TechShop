@@ -1,117 +1,105 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// FÁJL HELYE: Controllers/ProductsController.cs
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TechShop.DAL;
 using TechShop.Models;
+using TechShop.Services; // Az új Service réteg importálása
 
 namespace TechShop.Controllers
 {
-    // Ezzel biztosítjuk, hogy csak bejelentkezett felhasználók (a mi esetünkben az "adminok") 
-    // férjenek hozzá a termékek módosításához
     [Authorize]
     public class ProductsController : Controller
     {
-        private readonly TechShopIdentityDbContext _context;
+        private readonly IProductAdminService _adminService;
 
-        public ProductsController(TechShopIdentityDbContext context)
+        // Csak a Service-t injektáljuk, az adatbázist már nem!
+        public ProductsController(IProductAdminService adminService)
         {
-            _context = context;
+            _adminService = adminService;
         }
 
         // --- 1. TERMÉKEK LISTÁZÁSA ---
         public IActionResult Index()
         {
-            // Az Include behozza a kategória adatait is, így tudjuk a nevét kiírni a táblázatban
-            var products = _context.Products.Include(p => p.Category).ToList();
+            var products = _adminService.GetAllProducts();
             return View(products);
         }
 
-        // --- 2. ÚJ TERMÉK LÉTREHOZÁSA (Űrlap megjelenítése) ---
+        // --- 2. ÚJ TERMÉK LÉTREHOZÁSA (GET) ---
         public IActionResult Create()
         {
-            // Betöltjük a kategóriákat a legördülő menühöz
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = _adminService.GetAllCategories();
             return View();
         }
 
-        // --- 3. ÚJ TERMÉK LÉTREHOZÁSA (Adatok mentése az adatbázisba) ---
+        // --- 3. ÚJ TERMÉK LÉTREHOZÁSA (POST) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
-            // KIVÉTEL: A kategória objektumot nem az űrlap küldi (csak az ID-t), 
-            // ezért kivesszük a kötelező ellenőrzésből, különben a ModelState invalid lenne!
             ModelState.Remove("Category");
 
             if (ModelState.IsValid)
             {
-                _context.Products.Add(product);
-                _context.SaveChanges();
+                _adminService.CreateProduct(product);
                 TempData["SuccessMessage"] = $"{product.Name} sikeresen hozzáadva!";
-                return RedirectToAction(nameof(Index)); // Siker esetén vissza a listára
+                return RedirectToAction(nameof(Index));
             }
 
-            // Ha hiba volt (pl. rossz ár), újra fel kell tölteni a kategóriákat, mielőtt visszadobjuk az űrlapot!
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = _adminService.GetAllCategories();
             return View(product);
         }
 
-        // --- 4. TERMÉK SZERKESZTÉSE (Űrlap megjelenítése) ---
+        // --- 4. TERMÉK SZERKESZTÉSE (GET) ---
         public IActionResult Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = _context.Products.Find(id);
+            var product = _adminService.GetProductById(id.Value);
             if (product == null) return NotFound();
 
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = _adminService.GetAllCategories();
             return View(product);
         }
 
-        // --- 5. TERMÉK SZERKESZTÉSE (Adatok frissítése) ---
+        // --- 5. TERMÉK SZERKESZTÉSE (POST) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Product product)
         {
             if (id != product.ProductId) return NotFound();
 
-            // Itt is ki kell venni a kategóriát a validációból
             ModelState.Remove("Category");
 
             if (ModelState.IsValid)
             {
-                _context.Update(product);
-                _context.SaveChanges();
+                _adminService.UpdateProduct(product);
                 TempData["SuccessMessage"] = "A termék adatai sikeresen frissítve!";
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = _adminService.GetAllCategories();
             return View(product);
         }
 
-        // --- 6. TERMÉK TÖRLÉSE (Biztonsági kérdés megjelenítése) ---
+        // --- 6. TERMÉK TÖRLÉSE (GET) ---
         public IActionResult Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = _context.Products.Include(p => p.Category).FirstOrDefault(m => m.ProductId == id);
+            var product = _adminService.GetProductWithCategoryById(id.Value);
             if (product == null) return NotFound();
 
             return View(product);
         }
 
-        // --- 7. TERMÉK TÖRLÉSE (Végleges törlés az adatbázisból) ---
+        // --- 7. TERMÉK TÖRLÉSE (POST) ---
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var product = _context.Products.Find(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                _context.SaveChanges();
-            }
+            _adminService.DeleteProduct(id);
+
             TempData["SuccessMessage"] = "A termék véglegesen törölve lett.";
             return RedirectToAction(nameof(Index));
         }
